@@ -3959,32 +3959,8 @@ void OsiMskSolverInterface::addCols(const int numcols,
   debugMessage("Begin OsiMskSolverInterface::addCols(%d, %p, %p, %p, %p)\n", numcols, (void *)cols, (void *)collb, (void *)colub, (void *)obj);
   #endif
 
-  int i,maxnz = 0,nz=0, err = MSK_RES_OK;
+  int i, err = MSK_RES_OK;
 
-  err = MSK_getmaxnumanz(
-                     getLpPtr(),
-                     &maxnz);
-  checkMSKerror( err, "MSK_getmaxanz", "addCols" );
-
-  err = MSK_getnumanz(
-                     getLpPtr(),
-                     &nz);
-
-  checkMSKerror( err, "MSK_getnumanz", "addCols" );
-
-  int nzfactor = 1;
-  if (maxnz>0&&nz>0)
-	  {
-	  nzfactor = (nz/maxnz);
-	  }
-
-  for( i = 0; i < numcols; ++i)
-    nz += cols[i]->getNumElements()*nzfactor;
-
-  err = MSK_putmaxnumanz(getLpPtr(),
-                         nz);
-
-  checkMSKerror( err, "MSK_putmaxnumanz", "addCols" );
           
   err = MSK_putmaxnumvar(getLpPtr(),
                          numcols+getNumCols());
@@ -4130,32 +4106,8 @@ void OsiMskSolverInterface::addRows(const int numrows,
   debugMessage("Begin OsiMskSolverInterface::addRows(%d, %p, %p, %p)\n", numrows, (void *)rows, (void *)rowlb, (void *)rowub);
   #endif
 
-  int i,maxnz = 0,nz=0, err = MSK_RES_OK;
+  int i, err = MSK_RES_OK;
 
-  err = MSK_getmaxnumanz(
-                     getLpPtr(),
-                     &maxnz);
-  checkMSKerror( err, "MSK_getmaxanz", "addRows" );
-
-  err = MSK_getnumanz(
-                     getLpPtr(),
-                     &nz);
-
-  checkMSKerror( err, "MSK_getnumanz", "addRows" );
-  int nzfactor = 1;
-  if (maxnz>0&&nz>0)
-	  {
-	  nzfactor = (nz/maxnz);
-	  }
-  // For efficiency we put hints on the total future size
-  
-  for( i = 0; i < numrows; ++i)
-    nz += rows[i]->getNumElements()*nzfactor;
-
-  err = MSK_putmaxnumanz(getLpPtr(),
-                         nz);
-                     
-  checkMSKerror( err, "MSK_putmaxanz", "addRows" );
           
   err = MSK_putmaxnumcon(getLpPtr(),
                         numrows+getNumRows());
